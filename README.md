@@ -1,69 +1,54 @@
-# React + TypeScript + Vite
+# AI Agent Management Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React-based frontend application designed to interact with a serverless backend API for managing AI agents. It provides a user-friendly interface to perform CRUD (Create, Read, Update, Delete) operations on agent data.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Create Agent**: Add new AI agent profiles with various configurations.
+- **View Agents**: Display a list of all registered AI agents.
+- **Update Agent**: Modify existing AI agent details.
+- **Delete Agent**: Remove AI agent profiles from the system.
+- **Responsive Design**: Adapts to various screen sizes for a seamless experience across devices (desktop, tablet, mobile).
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React, TypeScript, Vite
+- **Styling**: ShadCN and Tailwind CSS
+  <!-- - **State Management**: (If applicable, add here, e.g., React Query, Redux, Zustand) -->
+  <!-- - **Routing**: (If applicable, add here, e.g., React Router) -->
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Node.js (v18.x or later recommended)
+- npm (or yarn)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/llcernicchiaro/crud-frontend
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+## Running Locally
+
+To start the development server:
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+This will typically start the application on `http://localhost:5173` (or another available port).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Deployment
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+This frontend application can be deployed to various static site hosting services (e.g., Vercel, Netlify, AWS S3 + CloudFront). The entry point URL for the deployed application will be provided upon completion of the challenge.
+
+## Screenshots
+
+_(Screenshots of the application UI will be added here upon completion.)_
