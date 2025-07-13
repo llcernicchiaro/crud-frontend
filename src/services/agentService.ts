@@ -1,7 +1,6 @@
 import type { Agent, CreateAgentInput, UpdateAgentInput } from "@/types/agent";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001";
 
 export const createAgent = async (agent: CreateAgentInput): Promise<Agent> => {
   const response = await fetch(`${API_BASE_URL}/agents`, {
@@ -16,7 +15,8 @@ export const createAgent = async (agent: CreateAgentInput): Promise<Agent> => {
     throw new Error(`Error creating agent: ${response.statusText}`);
   }
 
-  return response.json();
+  const data: Agent = (await response.json()) as Agent;
+  return data;
 };
 
 export const getAgent = async (id: string): Promise<Agent> => {
@@ -26,7 +26,8 @@ export const getAgent = async (id: string): Promise<Agent> => {
     throw new Error(`Error fetching agent: ${response.statusText}`);
   }
 
-  return response.json();
+  const data: Agent = (await response.json()) as Agent;
+  return data;
 };
 
 export const listAgents = async (): Promise<Agent[]> => {
@@ -36,7 +37,8 @@ export const listAgents = async (): Promise<Agent[]> => {
     throw new Error(`Error listing agents: ${response.statusText}`);
   }
 
-  return response.json();
+  const data: Agent[] = (await response.json()) as Agent[];
+  return data;
 };
 
 export const updateAgent = async (
@@ -55,7 +57,8 @@ export const updateAgent = async (
     throw new Error(`Error updating agent: ${response.statusText}`);
   }
 
-  return response.json();
+  const data: Agent = (await response.json()) as Agent;
+  return data;
 };
 
 export const deleteAgent = async (id: string): Promise<void> => {

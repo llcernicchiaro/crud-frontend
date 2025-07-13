@@ -37,7 +37,7 @@ export function AgentList() {
   const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchAgents();
+    void fetchAgents();
   }, []);
 
   const fetchAgents = async () => {
@@ -54,17 +54,16 @@ export function AgentList() {
   };
 
   const handleCreateOrUpdateAgent = async (
-    agentData: UpdateAgentInput | CreateAgentInput
+    agentData: CreateAgentInput | UpdateAgentInput
   ) => {
     setIsSubmitting(true);
     try {
       if (selectedAgent) {
-        await updateAgent(selectedAgent.id, agentData);
+        await updateAgent(selectedAgent.id, agentData as UpdateAgentInput);
       } else {
         await createAgent(agentData as CreateAgentInput);
       }
-
-      fetchAgents();
+      void fetchAgents();
       setIsFormOpen(false);
       setSelectedAgent(null);
     } catch (err) {
@@ -79,7 +78,7 @@ export function AgentList() {
     if (agentToDelete) {
       try {
         await deleteAgent(agentToDelete);
-        fetchAgents();
+        void fetchAgents();
         setIsDeleteDialogOpen(false);
         setAgentToDelete(null);
       } catch (err) {
@@ -110,9 +109,14 @@ export function AgentList() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Agent Management</h1>
-      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+      <Dialog
+        open={isFormOpen}
+        onOpenChange={(open) => {
+          setIsFormOpen(open);
+        }}
+      >
         <DialogTrigger asChild>
-          <Button onClick={openCreateForm} className="mb-4">
+          <Button onClick={void openCreateForm} className="mb-4">
             Create New Agent
           </Button>
         </DialogTrigger>
@@ -123,7 +127,7 @@ export function AgentList() {
             </DialogTitle>
           </DialogHeader>
           <AgentForm
-            initialData={selectedAgent || undefined}
+            initialData={selectedAgent ?? undefined}
             onSubmit={handleCreateOrUpdateAgent}
             isSubmitting={isSubmitting}
           />
@@ -153,7 +157,9 @@ export function AgentList() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => openEditForm(agent)}
+                  onClick={() => {
+                    openEditForm(agent);
+                  }}
                   className="mr-2"
                 >
                   Edit
@@ -161,7 +167,9 @@ export function AgentList() {
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => openDeleteDialog(agent.id)}
+                  onClick={() => {
+                    openDeleteDialog(agent.id);
+                  }}
                 >
                   Delete
                 </Button>
@@ -171,7 +179,12 @@ export function AgentList() {
         </TableBody>
       </Table>
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => {
+          setIsDeleteDialogOpen(open);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
@@ -183,7 +196,9 @@ export function AgentList() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
+              onClick={() => {
+                setIsDeleteDialogOpen(false);
+              }}
             >
               Cancel
             </Button>

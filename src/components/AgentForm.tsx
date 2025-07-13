@@ -37,7 +37,7 @@ export function AgentForm({
 }: AgentFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: initialData ?? {
       name: "",
       description: "",
       model: "gpt-4",
@@ -113,9 +113,9 @@ export function AgentForm({
                   step="0.1"
                   placeholder="Agent Temperature"
                   {...field}
-                  onChange={(event) =>
-                    field.onChange(parseFloat(event.target.value))
-                  }
+                  onChange={(event) => {
+                    field.onChange(parseFloat(event.target.value));
+                  }}
                 />
               </FormControl>
               <FormMessage />
