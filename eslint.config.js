@@ -17,6 +17,7 @@ export default tseslint.config([
       reactRefresh.configs.vite,
     ],
     rules: {
+      "react-refresh/only-export-components": "off",
       "@typescript-eslint/no-misused-promises": [
         "error",
         {

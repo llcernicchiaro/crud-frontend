@@ -47,7 +47,10 @@ This will typically start the application on `http://localhost:5173` (or another
 
 ## Deployment
 
-This frontend application can be deployed to various static site hosting services (e.g., Vercel, Netlify, AWS S3 + CloudFront). The entry point URL for the deployed application will be provided upon completion of the challenge.
+This frontend application is deployed using Vercel, providing continuous deployment from the `main` branch.
+
+-   **Production Environment**: [https://crud-frontend-henna-three.vercel.app/](https://crud-frontend-henna-three.vercel.app/)
+-   **Preview Deployments**: Vercel automatically creates preview deployments for every push to a Git branch (excluding `main`), each with a unique URL. These preview deployments are configured to connect to the backend's `dev` environment.
 
 ## Screenshots
 
