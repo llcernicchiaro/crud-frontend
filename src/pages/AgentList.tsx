@@ -108,76 +108,84 @@ export function AgentList() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Agent Management</h1>
-      <Dialog
-        open={isFormOpen}
-        onOpenChange={(open) => {
-          setIsFormOpen(open);
-        }}
-      >
-        <DialogTrigger asChild>
-          <Button onClick={void openCreateForm} className="mb-4">
-            Create New Agent
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {selectedAgent ? "Edit Agent" : "Create New Agent"}
-            </DialogTitle>
-          </DialogHeader>
-          <AgentForm
-            initialData={selectedAgent ?? undefined}
-            onSubmit={handleCreateOrUpdateAgent}
-            isSubmitting={isSubmitting}
-          />
-        </DialogContent>
-      </Dialog>
+      <div>
+        <h1 className="text-2xl font-bold mb-4">Agent Management</h1>
+        <Dialog
+          open={isFormOpen}
+          onOpenChange={(open) => {
+            setIsFormOpen(open);
+          }}
+        >
+          <DialogTrigger asChild>
+            <Button onClick={void openCreateForm} className="mb-4">
+              Create New Agent
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {selectedAgent ? "Edit Agent" : "Create New Agent"}
+              </DialogTitle>
+            </DialogHeader>
+            <AgentForm
+              initialData={selectedAgent ?? undefined}
+              onSubmit={handleCreateOrUpdateAgent}
+              isSubmitting={isSubmitting}
+            />
+          </DialogContent>
+        </Dialog>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Model</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Temperature</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {agents.map((agent) => (
-            <TableRow key={agent.id}>
-              <TableCell>{agent.name}</TableCell>
-              <TableCell>{agent.description}</TableCell>
-              <TableCell>{agent.model}</TableCell>
-              <TableCell>{agent.status}</TableCell>
-              <TableCell>{agent.temperature}</TableCell>
-              <TableCell>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    openEditForm(agent);
-                  }}
-                  className="mr-2"
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => {
-                    openDeleteDialog(agent.id);
-                  }}
-                >
-                  Delete
-                </Button>
-              </TableCell>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Model</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Temperature</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {agents.map((agent) => (
+              <TableRow key={agent.id}>
+                <TableCell>{agent.name}</TableCell>
+                <TableCell>{agent.description}</TableCell>
+                <TableCell>{agent.model}</TableCell>
+                <TableCell>{agent.status}</TableCell>
+                <TableCell>{agent.temperature}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      openEditForm(agent);
+                    }}
+                    className="mr-2"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      openDeleteDialog(agent.id);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {agents.length === 0 && !error && (
+        <div className="text-center py-8 text-gray-500">
+          No agents found. Create a new agent to get started!
+        </div>
+      )}
 
       <Dialog
         open={isDeleteDialogOpen}

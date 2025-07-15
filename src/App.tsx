@@ -1,10 +1,11 @@
 import { AgentList } from "./pages/AgentList";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 function App() {
   return (
-    <div className="App">
+    <ThemeProvider>
       <AgentList />
-    </div>
+    </ThemeProvider>
   );
 }
 

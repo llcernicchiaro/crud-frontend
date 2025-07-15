@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Agent, CreateAgentInput, UpdateAgentInput } from "@/types/agent";
 
 const formSchema = z.object({
@@ -81,9 +89,19 @@ export function AgentForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Model</FormLabel>
-              <FormControl>
-                <Input placeholder="Agent Model" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="gpt-4">GPT-4</SelectItem>
+                  <SelectItem value="claude">Claude</SelectItem>
+                  <SelectItem value="mistral">Mistral</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -94,9 +112,17 @@ export function AgentForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <FormControl>
-                <Input placeholder="Agent Status" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -123,6 +149,7 @@ export function AgentForm({
           )}
         />
         <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isSubmitting ? "Submitting..." : "Submit"}
         </Button>
       </form>
