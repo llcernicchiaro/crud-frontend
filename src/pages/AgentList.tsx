@@ -6,27 +6,17 @@ import {
   updateAgent,
   deleteAgent,
 } from "@/services/agentService";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { AgentForm } from "@/components/AgentForm";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Info } from "lucide-react";
+import { AgentListSkeleton } from "@/components/AgentListSkeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
+import { AgentTable } from "@/components/AgentTable";
+import { AgentCardList } from "@/components/AgentCardList";
+import { AgentFormDialog } from "@/components/AgentFormDialog";
+import { DeleteConfirmationDialog } from "@/components/DeleteConfirmationDialog";
 
-export function AgentList() {
+export default function AgentList() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,10 +24,23 @@ export function AgentList() {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"table" | "card">(() => {
+    return window.innerWidth >= 768 ? "table" : "card";
+  });
 
   useEffect(() => {
     void fetchAgents();
+
+    const handleResize = () => {
+      setViewMode(window.innerWidth >= 768 ? "table" : "card");
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const fetchAgents = async () => {
@@ -60,14 +63,17 @@ export function AgentList() {
     try {
       if (selectedAgent) {
         await updateAgent(selectedAgent.id, agentData as UpdateAgentInput);
+        toast.success("Agent updated successfully!");
       } else {
         await createAgent(agentData as CreateAgentInput);
+        toast.success("Agent created successfully!");
       }
       void fetchAgents();
       setIsFormOpen(false);
       setSelectedAgent(null);
     } catch (err) {
       setError("Failed to save agent.");
+      toast.error("Failed to save agent.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -76,14 +82,19 @@ export function AgentList() {
 
   const handleDeleteAgent = async () => {
     if (agentToDelete) {
+      setIsDeleting(true);
       try {
         await deleteAgent(agentToDelete);
         void fetchAgents();
         setIsDeleteDialogOpen(false);
         setAgentToDelete(null);
+        toast.success("Agent deleted successfully!");
       } catch (err) {
         setError("Failed to delete agent.");
+        toast.error("Failed to delete agent.");
         console.error(err);
+      } finally {
+        setIsDeleting(false);
       }
     }
   };
@@ -103,111 +114,73 @@ export function AgentList() {
     setIsDeleteDialogOpen(true);
   };
 
-  if (loading) return <div>Loading agents...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return <AgentListSkeleton viewMode={viewMode} />;
+  }
+  if (error)
+    return (
+      <Alert variant="destructive">
+        <Info className="h-4 w-4" />
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Agent Management</h1>
-      <Dialog
-        open={isFormOpen}
-        onOpenChange={(open) => {
-          setIsFormOpen(open);
-        }}
-      >
-        <DialogTrigger asChild>
-          <Button onClick={void openCreateForm} className="mb-4">
-            Create New Agent
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {selectedAgent ? "Edit Agent" : "Create New Agent"}
-            </DialogTitle>
-          </DialogHeader>
-          <AgentForm
-            initialData={selectedAgent ?? undefined}
-            onSubmit={handleCreateOrUpdateAgent}
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Agents</h1>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-500">Card View</span>
+            <Switch
+              checked={viewMode === "table"}
+              onCheckedChange={(checked) => {
+                setViewMode(checked ? "table" : "card");
+              }}
+              aria-label="Toggle view mode"
+            />
+            <span className="text-sm text-gray-500">Table View</span>
+          </div>
+
+          <AgentFormDialog
+            selectedAgent={selectedAgent}
+            isFormOpen={isFormOpen}
+            setIsFormOpen={setIsFormOpen}
+            openCreateForm={openCreateForm}
+            handleCreateOrUpdateAgent={handleCreateOrUpdateAgent}
             isSubmitting={isSubmitting}
           />
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Model</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Temperature</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {agents.map((agent) => (
-            <TableRow key={agent.id}>
-              <TableCell>{agent.name}</TableCell>
-              <TableCell>{agent.description}</TableCell>
-              <TableCell>{agent.model}</TableCell>
-              <TableCell>{agent.status}</TableCell>
-              <TableCell>{agent.temperature}</TableCell>
-              <TableCell>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    openEditForm(agent);
-                  }}
-                  className="mr-2"
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => {
-                    openDeleteDialog(agent.id);
-                  }}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {viewMode === "table" && (
+        <AgentTable
+          agents={agents}
+          openEditForm={openEditForm}
+          openDeleteDialog={openDeleteDialog}
+        />
+      )}
 
-      <Dialog
-        open={isDeleteDialogOpen}
-        onOpenChange={(open) => {
-          setIsDeleteDialogOpen(open);
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              agent.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsDeleteDialogOpen(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteAgent}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {viewMode === "card" && (
+        <AgentCardList
+          agents={agents}
+          openEditForm={openEditForm}
+          openDeleteDialog={openDeleteDialog}
+        />
+      )}
+
+      {agents.length === 0 && !error && (
+        <div className="text-center py-8 text-gray-500">
+          No agents found. Create a new agent to get started!
+        </div>
+      )}
+
+      <DeleteConfirmationDialog
+        isDeleteDialogOpen={isDeleteDialogOpen}
+        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+        handleDeleteAgent={handleDeleteAgent}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }
