@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
-import * as agentService from './services/agentService';
 import { vi } from 'vitest';
 
 // Mock the agentService

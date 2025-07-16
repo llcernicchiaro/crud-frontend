@@ -117,4 +117,10 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button {
+    font-size: 0.875rem !important; /* Equivalent to Tailwind's text-sm */
+    font-weight: 500 !important; /* Equivalent to Tailwind's font-medium */
+    line-height: 1.25rem !important; /* Equivalent to Tailwind's leading-snug */
+  }
 }
